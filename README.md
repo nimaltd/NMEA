@@ -13,9 +13,9 @@ Please Do This ...
 <br />
 3) Config your GpsConfig.h file.
 <br />
-6) Add Gps_RxCallBack() on usart interrupt routin. 
+4) Add Gps_RxCallBack() on usart interrupt routin. 
 <br />
-7) call  Gps_Init() in your app.
+5) call  Gps_Init() in your app.
 <br />
-8) Put Gps_Process() in Loop.
+6) Put Gps_Process() in Loop.
 
