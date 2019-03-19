@@ -19,3 +19,33 @@ Please Do This ...
 <br />
 6) Put Gps_Process() in Loop.
 
+```
+
+#include "GPS.h"
+..
+..
+..
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  GPS_CallBack();
+}
+..
+..
+..
+int main(void)
+{
+ .. 
+ ..
+ GPS_Init();
+ ..
+ ..
+ while(1)
+ {
+   GPS_Process();
+ }
+}
+
+
+
+```
+
