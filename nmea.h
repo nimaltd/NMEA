@@ -17,7 +17,7 @@
  *
  * (2.0.0):	Rewrite again. Support NONE-RTOS, RTOS V1 and RTOS V2. Supports GPS,COMPASS,SOUNDER
  */
- 
+
 #include "main.h"
 #include "nmea_config.h"
 #include <stdbool.h>
@@ -42,7 +42,7 @@ typedef struct
 	uint16_t				altitude:1;
 	uint16_t				speed_knots:1;
 	uint16_t				course:1;
-	
+
 }gnss_valid_t;
 
 typedef struct
@@ -59,18 +59,18 @@ typedef struct
 	float 					longitude_tmp;
 	float 					latitude_deg;
 	float 					longitude_deg;
-	float						precision_m;	
-	float 					altitude_m;	
+	float						precision_m;
+	float 					altitude_m;
 	float						speed_knots;
-	float						course_deg;	
-	
+	float						course_deg;
+
 }gnss_t;
 
 typedef struct
 {
 	uint8_t					true_compass:1;
 	uint8_t					mag_compass:1;
-		
+
 }compass_valid_t;
 
 typedef struct
@@ -78,7 +78,7 @@ typedef struct
 	compass_valid_t	valid;
 	float						true_course_deg;
 	float						mag_course_deg;
-	
+
 }compass_t;
 
 typedef struct
@@ -86,7 +86,7 @@ typedef struct
 	uint8_t					depth:1;
 	uint8_t					depth_offset:1;
 	uint8_t					temp:1;
-	
+
 }sounder_valid_t;
 
 typedef struct
@@ -95,7 +95,7 @@ typedef struct
 	float						depth_m;
 	float						depth_offset_m;
 	float						temp_c;
-	
+
 }sounder_t;
 
 typedef struct
@@ -106,18 +106,18 @@ typedef struct
 	uint16_t				buf_index;
 	uint16_t				buf_size;
 	bool						lock;
-	bool						available;	
+	bool						available;
 	gnss_t					gnss;
 	compass_t				compass;
 	sounder_t				sounder;
-	
+
 }nmea_t;
 
 //##################################################################################
 
 //								ALL
 bool 							nmea_init(nmea_t *nmea, USART_TypeDef *usart, uint16_t buf_size);
-void 							nmea_loop(nmea_t *nmea);	
+void 							nmea_loop(nmea_t *nmea);
 void 							nmea_callback(nmea_t *nmea);
 bool 							nmea_available(nmea_t *nmea);
 void 							nmea_available_reset(nmea_t *nmea);

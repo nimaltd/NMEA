@@ -1,15 +1,15 @@
 
 #include "nmea.h"
-	
+
 const char *nmea_delimiter[] = {
-	
+
 	"GGA", 	// 	Global Positioning System Fix Data
 	"RMC", 	//	Recommended minimum specific GPS/Transit data
 	"HDT", 	// 	Heading - Heading True
-	"HDM",	// 	Heading - Heading Magnetic	
+	"HDM",	// 	Heading - Heading Magnetic
 	"DPT",  //	Depth
 	"MTW",  //	Water temperature
-	
+
 };
 
 #define		NMEA_GGA		nmea_delimiter[0]
@@ -22,7 +22,7 @@ const char *nmea_delimiter[] = {
 //###########################################################################################################################
 uint8_t nmea_checksum(const char *sentence)
 {
-	const char *n = sentence + 1; 
+	const char *n = sentence + 1;
   uint8_t chk = 0;
   while ('*' != *n && '\r' != *n)
 	{
@@ -35,7 +35,7 @@ uint8_t nmea_checksum(const char *sentence)
 }
 //###########################################################################################################################
 inline float nmea_convert(float raw_degrees)
-{ 
+{
   int firstdigits = ((int)raw_degrees) / 100;
   float nexttwodigits = raw_degrees - (float)(firstdigits * 100.0f);
   return (float)(firstdigits + nexttwodigits / 60.0f);
@@ -53,7 +53,7 @@ inline void nmea_callback(nmea_t *nmea)
       nmea->buf[nmea->buf_index++] = tmp;
     }
     nmea->buf_time = HAL_GetTick();
-  }	
+  }
 }
 //###########################################################################################################################
 bool nmea_init(nmea_t *nmea, USART_TypeDef *usart, uint16_t buf_size)
@@ -62,15 +62,15 @@ bool nmea_init(nmea_t *nmea, USART_TypeDef *usart, uint16_t buf_size)
 		return false;
 	memset(nmea, 0, sizeof(nmea_t));
 	nmea->usart = usart;
-#if _NMEA_USE_FREERTOS != 0	
+#if _NMEA_USE_FREERTOS != 0
 	nmea->buf = (char*) pvPortMalloc(buf_size);
 #else
 	nmea->buf = (char*) malloc(buf_size);
 #endif
 	if (nmea->buf == NULL)
-		return false;	
+		return false;
 	nmea->buf_size = buf_size;
-	LL_USART_EnableIT_RXNE(nmea->usart);	
+	LL_USART_EnableIT_RXNE(nmea->usart);
 	return true;
 }
 //###########################################################################################################################
@@ -80,24 +80,24 @@ void nmea_loop(nmea_t *nmea)
 		nmea_delay(1);
 	nmea->lock = true;
 	if ((nmea->buf_index > 0) && (HAL_GetTick() - nmea->buf_time >= 100))
-	{		
+	{
 		char line[128];
 		char *found = NULL;
 		char *checksum = NULL;
 		char checksum_read[2];
 		bool end = false;
-		
+
 		//	+++	decode $xxGGA
 		do
 		{
 			end = false;
 			found = strstr(nmea->buf, NMEA_GGA);
 			if (found != NULL)
-			{	
+			{
 				found -= 3;
 				if (found[0] != '$')
-					break;						
-				checksum = strstr(found, "*"); 
+					break;
+				checksum = strstr(found, "*");
 				if (checksum == NULL)
 					break;
 				checksum_read[0] = *(checksum + 1);
@@ -162,7 +162,7 @@ void nmea_loop(nmea_t *nmea)
 								}
 							break;
 							case 7:
-								
+
 							break;
 							case 8:
 								if (str[0] < '0' || str[0] > '9')
@@ -190,24 +190,24 @@ void nmea_loop(nmea_t *nmea)
 						if (end)
 							break;
 					}
-					nmea->available = true;					
-				}				
+					nmea->available = true;
+				}
 			}
 		}
 		while (0);
 		//	---	decode $xxGGA
-		
+
 		//	+++	decode $xxRMC
 		do
 		{
 			end = false;
 			found = strstr(nmea->buf, NMEA_RMC);
 			if (found != NULL)
-			{				
-				found -= 3;	
+			{
+				found -= 3;
 				if (found[0] != '$')
-					break;										
-				checksum = strstr(found, "*"); 
+					break;
+				checksum = strstr(found, "*");
 				if (checksum == NULL)
 					break;
 				checksum_read[0] = *(checksum + 1);
@@ -238,7 +238,7 @@ void nmea_loop(nmea_t *nmea)
 								nmea->gnss.valid.time = 1;
 							break;
 							case 3:
-								
+
 							break;
 							case 4:
 								if (str[0] < '0' || str[0] > '9')
@@ -253,7 +253,7 @@ void nmea_loop(nmea_t *nmea)
 									}
 								else if (strcmp(str, "N") == 0)
 								{
-									nmea->gnss.latitude_deg = nmea_convert(nmea->gnss.latitude_tmp);								
+									nmea->gnss.latitude_deg = nmea_convert(nmea->gnss.latitude_tmp);
 									nmea->gnss.valid.latitude = 1;
 								}
 							break;
@@ -302,24 +302,24 @@ void nmea_loop(nmea_t *nmea)
 						if (end)
 							break;
 					}
-					nmea->available = true;					
-				}				
+					nmea->available = true;
+				}
 			}
 		}
-		while (0);	
+		while (0);
 		//	---	decode $xxRMC
-		
+
 		//	+++	decode &xxHDT
 		do
 		{
 			end = false;
 			found = strstr(nmea->buf, NMEA_HDT);
 			if (found != NULL)
-			{				
+			{
 				found -= 3;
 				if (found[0] != '$')
-					break;						
-				checksum = strstr(found, "*"); 
+					break;
+				checksum = strstr(found, "*");
 				if (checksum == NULL)
 					break;
 				checksum_read[0] = *(checksum + 1);
@@ -355,24 +355,24 @@ void nmea_loop(nmea_t *nmea)
 						if (end)
 							break;
 					}
-					nmea->available = true;					
-				}				
+					nmea->available = true;
+				}
 			}
 		}
-		while (0);	
+		while (0);
 		//	---	decode $xxHDT
-		
+
 		//	+++	decode &xxHDM
 		do
 		{
 			end = false;
 			found = strstr(nmea->buf, NMEA_HDM);
 			if (found != NULL)
-			{				
+			{
 				found -= 3;
 				if (found[0] != '$')
-					break;						
-				checksum = strstr(found, "*"); 
+					break;
+				checksum = strstr(found, "*");
 				if (checksum == NULL)
 					break;
 				checksum_read[0] = *(checksum + 1);
@@ -408,24 +408,24 @@ void nmea_loop(nmea_t *nmea)
 						if (end)
 							break;
 					}
-					nmea->available = true;					
-				}				
+					nmea->available = true;
+				}
 			}
 		}
-		while (0);	
+		while (0);
 		//	---	decode $xxHDT
-		
+
 		//	+++	decode &xxDPT
 		do
 		{
 			end = false;
 			found = strstr(nmea->buf, NMEA_DPT);
 			if (found != NULL)
-			{				
+			{
 				found -= 3;
 				if (found[0] != '$')
-					break;						
-				checksum = strstr(found, "*"); 
+					break;
+				checksum = strstr(found, "*");
 				if (checksum == NULL)
 					break;
 				checksum_read[0] = *(checksum + 1);
@@ -467,24 +467,24 @@ void nmea_loop(nmea_t *nmea)
 						if (end)
 							break;
 					}
-					nmea->available = true;					
-				}				
+					nmea->available = true;
+				}
 			}
 		}
-		while (0);	
+		while (0);
 		//	---	decode $xxDPT
-		
+
 		//	+++	decode &xxMTW
 		do
 		{
 			end = false;
 			found = strstr(nmea->buf, NMEA_MTW);
 			if (found != NULL)
-			{				
+			{
 				found -= 3;
 				if (found[0] != '$')
-					break;						
-				checksum = strstr(found, "*"); 
+					break;
+				checksum = strstr(found, "*");
 				if (checksum == NULL)
 					break;
 				checksum_read[0] = *(checksum + 1);
@@ -530,19 +530,19 @@ void nmea_loop(nmea_t *nmea)
 						if (end)
 							break;
 					}
-					nmea->available = true;					
-				}				
+					nmea->available = true;
+				}
 			}
 		}
-		while (0);	
+		while (0);
 		//	---	decode $xxMTW
-		
+
 		if (!nmea->available)
 		{
 			memset(nmea->buf, 0, nmea->buf_size);
 			nmea->buf_index = 0;
 		}
-	}	
+	}
 	nmea->lock = false;
 }
 //###########################################################################################################################
@@ -556,259 +556,259 @@ void nmea_available_reset(nmea_t *nmea)
 	while (nmea->lock)
 		nmea_delay(1);
 	nmea->lock = true;
-	memset(&nmea->gnss.valid, 0, sizeof(gnss_valid_t)); 
-	memset(&nmea->compass.valid, 0, sizeof(compass_valid_t)); 
-	memset(&nmea->sounder.valid, 0, sizeof(sounder_valid_t)); 
+	memset(&nmea->gnss.valid, 0, sizeof(gnss_valid_t));
+	memset(&nmea->compass.valid, 0, sizeof(compass_valid_t));
+	memset(&nmea->sounder.valid, 0, sizeof(sounder_valid_t));
 	memset(nmea->buf, 0, nmea->buf_size);
 	nmea->buf_index = 0;
-	nmea->available = false;	
+	nmea->available = false;
 	nmea->lock = false;
 }
 //###########################################################################################################################
 bool nmea_gnss_time_h(nmea_t *nmea, uint8_t *data)
 {
 	if (nmea == NULL)
-		return false;	
+		return false;
 	if (nmea->gnss.valid.time == 1)
 	{
 		if (data != NULL)
 			*data = nmea->gnss.time_h;
-		return true;	
+		return true;
 	}
-	return false;	
+	return false;
 }
 //###########################################################################################################################
 bool nmea_gnss_time_m(nmea_t *nmea, uint8_t *data)
 {
 	if (nmea == NULL)
-		return false;	
+		return false;
 	if (nmea->gnss.valid.time == 1)
 	{
 		if (data != NULL)
 			*data = nmea->gnss.time_m;
-		return true;	
+		return true;
 	}
-	return false;	
+	return false;
 }
 //###########################################################################################################################
 bool nmea_gnss_time_s(nmea_t *nmea, uint8_t *data)
 {
 	if (nmea == NULL)
-		return false;	
+		return false;
 	if (nmea->gnss.valid.time == 1)
 	{
 		if (data != NULL)
 			*data = nmea->gnss.time_s;
-		return true;	
+		return true;
 	}
-	return false;	
+	return false;
 }
 //###########################################################################################################################
 bool nmea_gnss_date_y(nmea_t *nmea, uint8_t *data)
 {
 	if (nmea == NULL)
-		return false;	
+		return false;
 	if (nmea->gnss.valid.date == 1)
 	{
 		if (data != NULL)
 			*data = nmea->gnss.date_y;
-		return true;	
+		return true;
 	}
-	return false;	
+	return false;
 }
 //###########################################################################################################################
 bool nmea_gnss_date_m(nmea_t *nmea, uint8_t *data)
 {
 	if (nmea == NULL)
-		return false;	
+		return false;
 	if (nmea->gnss.valid.date == 1)
 	{
 		if (data != NULL)
 			*data = nmea->gnss.date_m;
-		return true;	
+		return true;
 	}
-	return false;	
+	return false;
 }
 //###########################################################################################################################
 bool nmea_gnss_date_d(nmea_t *nmea, uint8_t *data)
 {
 	if (nmea == NULL)
-		return false;	
+		return false;
 	if (nmea->gnss.valid.date == 1)
 	{
 		if (data != NULL)
 			*data = nmea->gnss.date_d;
-		return true;	
+		return true;
 	}
-	return false;	
+	return false;
 }
 //###########################################################################################################################
 bool nmea_gnss_satellite(nmea_t *nmea, uint8_t *data)
 {
 	if (nmea == NULL)
-		return false;	
+		return false;
 	if (nmea->gnss.valid.satellite == 1)
 	{
 		if (data != NULL)
 			*data = nmea->gnss.satellite;
-		return true;	
+		return true;
 	}
-	return false;	
+	return false;
 }
 //###########################################################################################################################
 bool nmea_gnss_speed_kph(nmea_t *nmea, float *data)
 {
 	if (nmea == NULL)
-		return false;	
+		return false;
 	if (nmea->gnss.valid.speed_knots == 1)
 	{
 		if (data != NULL)
 			*data = nmea->gnss.speed_knots * 1.852f;
-		return true;	
+		return true;
 	}
-	return false;	
+	return false;
 }
 //###########################################################################################################################
 bool nmea_gnss_speed_knots(nmea_t *nmea, float *data)
 {
 	if (nmea == NULL)
-		return false;	
+		return false;
 	if (nmea->gnss.valid.speed_knots == 1)
 	{
 		if (data != NULL)
 			*data = nmea->gnss.speed_knots;
-		return true;	
+		return true;
 	}
-	return false;	
+	return false;
 }
 //###########################################################################################################################
 bool nmea_gnss_precision_m(nmea_t *nmea, float *data)
 {
 	if (nmea == NULL)
-		return false;	
+		return false;
 	if (nmea->gnss.valid.precision == 1)
 	{
 		if (data != NULL)
 			*data = nmea->gnss.precision_m;
-		return true;	
+		return true;
 	}
-	return false;	
+	return false;
 }
 //###########################################################################################################################
 bool nmea_gnss_course_deg(nmea_t *nmea, float *data)
 {
 	if (nmea == NULL)
-		return false;	
+		return false;
 	if (nmea->gnss.valid.course == 1)
 	{
 		if (data != NULL)
 			*data = nmea->gnss.course_deg;
-		return true;	
+		return true;
 	}
-	return false;	
+	return false;
 }
 //###########################################################################################################################
 bool nmea_gnss_latitude_deg(nmea_t *nmea, float *data)
 {
 	if (nmea == NULL)
-		return false;	
+		return false;
 	if (nmea->gnss.valid.latitude == 1)
 	{
 		if (data != NULL)
 			*data = nmea->gnss.latitude_deg;
-		return true;	
+		return true;
 	}
-	return false;	
+	return false;
 }
 //###########################################################################################################################
 bool nmea_gnss_longitude_deg(nmea_t *nmea, float *data)
 {
 	if (nmea == NULL)
-		return false;	
+		return false;
 	if (nmea->gnss.valid.longitude == 1)
 	{
 		if (data != NULL)
 			*data = nmea->gnss.longitude_deg;
-		return true;	
+		return true;
 	}
-	return false;	
+	return false;
 }
 //###########################################################################################################################
 bool nmea_gnss_altitude_m(nmea_t *nmea, float *data)
 {
 	if (nmea == NULL)
-		return false;	
+		return false;
 	if (nmea->gnss.valid.altitude == 1)
 	{
 		if (data != NULL)
 			*data = nmea->gnss.altitude_m;
-		return true;	
+		return true;
 	}
-	return false;	
+	return false;
 }
 //###########################################################################################################################
 bool nmea_compass_true_course_deg(nmea_t *nmea, float *data)
 {
 	if (nmea == NULL)
-		return false;	
+		return false;
 	if (nmea->compass.valid.true_compass == 1)
 	{
 		if (data != NULL)
 			*data = nmea->compass.true_course_deg;
-		return true;	
+		return true;
 	}
-	return false;	
+	return false;
 }
 //###########################################################################################################################
 bool nmea_compass_mag_course_deg(nmea_t *nmea, float *data)
 {
 	if (nmea == NULL)
-		return false;	
+		return false;
 	if (nmea->compass.valid.mag_compass == 1)
 	{
 		if (data != NULL)
 			*data = nmea->compass.mag_course_deg;
-		return true;	
+		return true;
 	}
-	return false;	
+	return false;
 }
 //###########################################################################################################################
 bool nmea_sounder_depth_m(nmea_t *nmea, float *data)
 {
 	if (nmea == NULL)
-		return false;	
+		return false;
 	if (nmea->sounder.valid.depth == 1)
 	{
 		if (data != NULL)
 			*data = nmea->sounder.depth_m;
-		return true;	
+		return true;
 	}
-	return false;	
+	return false;
 }
 //###########################################################################################################################
 bool nmea_sounder_depth_offset_m(nmea_t *nmea, float *data)
 {
 	if (nmea == NULL)
-		return false;	
+		return false;
 	if (nmea->sounder.valid.depth_offset == 1)
 	{
 		if (data != NULL)
 			*data = nmea->sounder.depth_offset_m;
-		return true;	
+		return true;
 	}
-	return false;	
+	return false;
 }
 //###########################################################################################################################
 bool nmea_sounder_temp_c(nmea_t *nmea, float *data)
 {
 	if (nmea == NULL)
-		return false;		
+		return false;
 	if (nmea->sounder.valid.temp == 1)
 	{
 		if (data != NULL)
 			*data = nmea->sounder.temp_c;
-		return true;	
+		return true;
 	}
-	return false;	
+	return false;
 }
 //###########################################################################################################################
