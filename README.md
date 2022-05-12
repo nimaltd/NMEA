@@ -38,15 +38,16 @@ void task_nmea(void const * argument)
 
 void task_other(void const * argument)
 {
- uint8_t time_h; 
- for(;;)
+  uint8_t time_h; 
+  for(;;)
   {
-		if (nmea_available(&gps))
-		{
+    if (nmea_available(&gps))
+    {
       nmea_gnss_time_h(&gps, &time_h);
-			nmea_available_reset(&gps);
-		}
+      nmea_available_reset(&gps);
+    }
     osDelay(1);
+  }
 }
 ```
 in interrupt file
