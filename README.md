@@ -5,7 +5,7 @@
 *	LinkedIn:   https://www.linkedin.com/in/NimaLTD
 *	Youtube:    https://www.youtube.com/channel/UCUhY7qY1klJm1d2kulr9ckw 
 --------------------------------------------------------------------------------
-* 'http://github.com/nimaltd/NMEA'.
+* http://github.com/nimaltd/NMEA.
 -----------------------------------------------------------   
 * Enable USART (LL Library) and RX interrupt.
 * Set baudrate, stop bits and parity.
