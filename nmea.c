@@ -19,6 +19,9 @@ const char *nmea_delimiter[] = {
 #define		NMEA_DPT		nmea_delimiter[4]
 #define		NMEA_MTW		nmea_delimiter[5]
 
+float nmea_convert(float raw_degrees);
+uint8_t nmea_checksum(const char *sentence);
+
 //###########################################################################################################################
 uint8_t nmea_checksum(const char *sentence)
 {
