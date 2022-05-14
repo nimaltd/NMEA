@@ -54,8 +54,8 @@ inline void nmea_callback(nmea_t *nmea)
     if (nmea->buf_index < nmea->buf_size - 1)
     {
       nmea->buf[nmea->buf_index++] = tmp;
+      nmea->buf_time = HAL_GetTick();
     }
-    nmea->buf_time = HAL_GetTick();
   }
 }
 //###########################################################################################################################
@@ -540,11 +540,8 @@ void nmea_loop(nmea_t *nmea)
 		while (0);
 		//	---	decode $xxMTW
 
-		if (!nmea->available)
-		{
-			memset(nmea->buf, 0, nmea->buf_size);
-			nmea->buf_index = 0;
-		}
+    memset(nmea->buf, 0, nmea->buf_size);
+    nmea->buf_index = 0;
 	}
 	nmea->lock = false;
 }
