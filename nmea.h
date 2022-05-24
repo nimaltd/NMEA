@@ -10,10 +10,11 @@
  */
 
 /*
- * Version:	2.0.0
+ * Version:	2.0.1
  *
  * History:
  *
+ * (2.0.1):	Fix receiving data
  * (2.0.0):	Rewrite again. Support NONE-RTOS, RTOS V1 and RTOS V2. Supports GPS,COMPASS,SOUNDER
  */
 

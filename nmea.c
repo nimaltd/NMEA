@@ -57,6 +57,8 @@ inline void nmea_callback(nmea_t *nmea)
       nmea->buf_time = HAL_GetTick();
     }
   }
+  else
+    nmea->usart->ICR = 0xFFFFFFFF;
 }
 //###########################################################################################################################
 bool nmea_init(nmea_t *nmea, USART_TypeDef *usart, uint16_t buf_size)
