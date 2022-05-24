@@ -294,9 +294,9 @@ void nmea_loop(nmea_t *nmea)
 							case 10:
 								if (str[0] < '0' || str[0] > '9')
 									break;
-								nmea->gnss.date_y = ((str[0] - 48) * 10) + (str[1] - 48);
+								nmea->gnss.date_d = ((str[0] - 48) * 10) + (str[1] - 48);
 								nmea->gnss.date_m = ((str[2] - 48) * 10) + (str[3] - 48);
-								nmea->gnss.date_d = ((str[4] - 48) * 10) + (str[5] - 48);
+								nmea->gnss.date_y = ((str[4] - 48) * 10) + (str[5] - 48);
 								nmea->gnss.valid.date = 1;
 							break;
 							default:
