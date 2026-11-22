@@ -7,6 +7,8 @@
  *	Instagram:  https://www.instagram.com/github.NimaLTD
  *	LinkedIn:   https://www.linkedin.com/in/NimaLTD
  *	Youtube:    https://www.youtube.com/channel/UCUhY7qY1klJm1d2kulr9ckw
+ *
+ *	Version 3 edited by: Mahdi Zamani (https://github.com/zamanimahdi)
  */
 
 /*

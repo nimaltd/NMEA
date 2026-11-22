@@ -4,6 +4,7 @@
 *	Instagram:  https://www.instagram.com/github.NimaLTD
 *	LinkedIn:   https://www.linkedin.com/in/NimaLTD
 *	Youtube:    https://www.youtube.com/@nimaltd
+*	Version 3 edited by: Mahdi Zamani (https://github.com/zamanimahdi)
 --------------------------------------------------------------------------------
 * http://github.com/nimaltd/NMEA.
 --------------------------------------------------------------------------------

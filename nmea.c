@@ -2,6 +2,8 @@
  *	Author:     Nima Askari
  *	WebSite:    https://www.github.com/NimaLTD
  *
+ *	Version 3 edited by: Mahdi Zamani (https://github.com/zamanimahdi)
+ *
  *	Polled, circular-DMA NMEA-0183 decoder. See nmea.h (history) and README.md.
  */
 
